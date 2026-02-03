@@ -8,7 +8,8 @@ const app = express()
 
 // middleware
 app.use(cors({
-    origin:config.better_auth.app_url!,
+
+     origin: [config.better_auth.app_url!],
     credentials:true,
 }))
 app.use(express.json())

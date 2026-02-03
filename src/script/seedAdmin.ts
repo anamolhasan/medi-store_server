@@ -1,57 +1,59 @@
-import config from "../config";
-import { Role } from "../constants/enum";
 import { prisma } from "../lib/prisma";
+import config from "../config";
 
 
-async function seedAdmin(){
-  try {
-    console.log('*** Admin Seeding Seeding... ***');
-    const adminData = {
-        name:'Admin',
-        email: config.admin.email!,
-        password: config.admin.password!,
-        role: Role.ADMIN,
-    }
-
-    console.log('*** Check Admin Exist or Not... ***');
-
-    //? check if the user exist or not
-    const existingUser = await prisma.user.findUnique({
-        where: {
-            email: adminData.email,
-        },
-    })
-    if(existingUser){
-        throw new Error('User already exist')
-    }
-
-    console.log('*** Create Admin... ****');
-    const signupAdmin = await fetch(
-        `${config.better_auth.url}/api/auth/sign-up/email`,{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json",
-                Origin:'http://localhost:3000',
-            },
-            body:JSON.stringify(adminData)
+async function seedAdmin() {
+    try {
+        console.log("***** Admin Seeding Started....")
+        const adminData = {
+            name: "Admin",
+            email: config.admin.email!,
+            role: 'ADMIN',
+            password: config.admin.password!
         }
-    );
-
-    if(signupAdmin.ok){
-        console.log('*** Admin Created... ***');
-        await prisma.user.update({
-            where:{
-                email:adminData.email,
-            },
-            data:{
-                 emailVerified:true,
+        console.log("***** Checking Admin Exist or not****")
+        // check user exist on db or not
+        const existingUser = await prisma.user.findUnique({
+            where: {
+                email: adminData.email
             }
-        })
-        console.log('*** Email Verification Status Updated... ***')
+        });
+// console.log('existingUser---->', existingUser)
+        if (existingUser) {
+            throw new Error("User already exists!!");
+        }
+
+        const signUpAdmin = await fetch(`${process.env.BASE_URL || "http://localhost:5000"}/api/auth/sign-up/email`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                origin: config.better_auth.app_url || config.better_auth.app_url || "http://localhost:3000"
+            },
+            body: JSON.stringify(adminData)
+        });
+
+        const signUpAdminText = await signUpAdmin.text();
+        console.log('-signupAdmin--->', signUpAdmin.status, signUpAdmin.statusText, signUpAdminText);
+
+
+        if (signUpAdmin.ok) {
+            console.log("**** Admin created")
+            await prisma.user.update({
+                where: {
+                    email: adminData.email
+                },
+                data: {
+                    emailVerified: true
+                }
+            })
+
+            console.log("**** Email verification status updated!")
+        }
+        console.log("******* SUCCESS ******")
+
+    } catch (error) {
+        console.error(error);
     }
-    console.log('*** Admin Seeding Completed... ****')
-  } catch (error:any) {
-    console.log('Error', error)
-  }
 }
+
 seedAdmin()
