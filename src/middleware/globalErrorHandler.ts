@@ -11,11 +11,13 @@ function globalErrorHandler(
   let message = "Internal server Error";
   let error = err;
 
-  //    prisma validation error
-  if (err instanceof Prisma.PrismaClientInitializationError) {
+   // ✅ Prisma validation error
+  if (err instanceof Prisma.PrismaClientValidationError) {
     statusCode = 400;
     message = "Invalid or missing fields";
-  } else if (err instanceof Prisma.PrismaClientInitializationError) {
+  } 
+    // ✅ Prisma known request error (P2002, P2003 etc)
+  else if (err instanceof Prisma.PrismaClientKnownRequestError) {
     switch (err.code) {
       case "P2002":
         statusCode = 409;
@@ -29,8 +31,13 @@ function globalErrorHandler(
         statusCode = 404;
         message = "Record not found.";
         break;
+      default:
+        statusCode = 400;
+        message = 'Database request error'
     }
-  } else if (err instanceof Prisma.PrismaClientInitializationError) {
+  } 
+    // ✅ Prisma initialization error (DB connection/auth)
+  else if (err instanceof Prisma.PrismaClientInitializationError) {
     if (err.errorCode === "P1000") {
       statusCode = 401;
       message = "Database authentication failed";
@@ -38,12 +45,14 @@ function globalErrorHandler(
       statusCode = 503;
       message = "Database server unreachable";
     }
-  } else if (err.statusCode) {
+  } 
+    // ✅ Custom / App error
+  else if (err.statusCode) {
     statusCode = err.statusCode;
     message = err.message;
   }
 
-  // Log full error (server-side only)
+  // 🔴 server  Log full error (server-side only)
   console.log(error);
 
   res.status(statusCode).json({
