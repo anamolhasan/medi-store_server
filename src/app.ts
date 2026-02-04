@@ -5,6 +5,7 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from './lib/auth';
 import { medicineRoutes } from './modules/medicine/medicine.route';
 import globalErrorHandler from './middleware/globalErrorHandler';
+import { categoryRoutes } from './modules/category/category.route';
 
 const app = express()
 
@@ -21,7 +22,8 @@ app.use(express.urlencoded({extended:true}))
 // Routes
 app.all("/api/auth/*split", toNodeHandler(auth));
 
-app.use('/api/v1/user', medicineRoutes)
+app.use('/api/v1/category', categoryRoutes)
+app.use('/api/v1/medicine', medicineRoutes)
 
 
 
