@@ -23,6 +23,32 @@ const createMedicine = async (payload:Medicine) => {
    if(!seller){
     throw new AppError('Seller not found', 404)
    }
+
+    // 2️⃣ Validate category
+    const category = await prisma.category.findUnique({
+        where: {
+            id: categoryId
+        }
+    })
+    if(!category){
+        throw new AppError('Category not found', 404)
+    }
+
+    // Create medicine
+    const medicine = await prisma.medicine.create({
+        data:{
+            name,
+            description,
+            price,
+            stock,
+            manufacturer,
+            imageUrl,
+            categoryId,
+            sellerId,
+        }
+    })
+
+    return medicine
 }
 
 
