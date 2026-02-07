@@ -1,5 +1,6 @@
 import { Request } from "express";
 import { Role, UserStatus } from "../../../generated/prisma/enums";
+import { prisma } from "../../lib/prisma";
 
 
 interface UpdateUserPayload {
@@ -10,7 +11,12 @@ interface UpdateUserPayload {
 }
 
 const getCurrentUser = async (req:Request) => {
-    
+    const userId = req.user?.id;
+
+    const user = await prisma.user.findUnique({
+        where:{id:userId as string},
+    })
+    return user;
 }
 
 const getAllUsers = async () => {
