@@ -6,6 +6,7 @@ import { auth } from './lib/auth';
 import { medicineRoutes } from './modules/medicine/medicine.route';
 import globalErrorHandler from './middleware/globalErrorHandler';
 import { categoryRoutes } from './modules/category/category.route';
+import { userRoutes } from './modules/user/user.route';
 
 const app = express()
 
@@ -24,6 +25,7 @@ app.all("/api/auth/*split", toNodeHandler(auth));
 
 app.use('/api/v1/category', categoryRoutes)
 app.use('/api/v1/medicine', medicineRoutes)
+app.use('/api/v1/user', userRoutes)
 
 
 
