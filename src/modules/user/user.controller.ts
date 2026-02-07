@@ -19,8 +19,16 @@ const getCurrentUser = async (
     }
 }
 
-const getAllUsers = async () => {
-
+const getAllUsers = async (req:Request, res:Response, next:NextFunction) => {
+   try {
+     const result = await userService.getAllUsers();
+     res.status(200).json({
+        success:true,
+        message:'All users fetched successfully!'
+     })
+   } catch (error: any) {
+     next(error)
+   }
 }
 
 const adminStatus = async () => {

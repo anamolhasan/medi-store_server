@@ -20,7 +20,8 @@ const getCurrentUser = async (req:Request) => {
 }
 
 const getAllUsers = async () => {
-
+  const result = await prisma.user.findMany()
+  return result;
 }
 
 const adminStatus = async () => {
