@@ -45,8 +45,17 @@ const adminStatus = async (req:Request, res:Response, next:NextFunction) => {
      }
 }
 
-const sellerStatus = async () => {
-
+const sellerStatus = async (req:Request, res:Response, next:NextFunction) => {
+   try {
+     const result = await userService.sellerStatus();
+     res.status(200).json({
+        success:true,
+        message:'Seller stats fetched successfully!',
+        data:result
+     })
+   } catch (error:any) {
+     next(error)
+   }
 }
 
 const customerStatus = async () => {
