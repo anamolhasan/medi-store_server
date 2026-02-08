@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import { userService } from "./user.service"
+import { User } from "../../../generated/prisma/client"
 
 
 const getCurrentUser = async (
@@ -58,8 +59,18 @@ const sellerStatus = async (req:Request, res:Response, next:NextFunction) => {
    }
 }
 
-const customerStatus = async () => {
-
+const customerStatus = async (req:Request, res:Response, next:NextFunction) => {
+   try {
+    const suer = req.user;
+    const result = await userService.customerStatus(user as Partial<User>);
+    res.status(200).json({
+        success:true,
+        message:'customer stats fetched successfully!',
+        data:result,
+    })
+   } catch (error:any) {
+      next(error)
+   }
 }
 
 const updateUser = async () => {
