@@ -1,8 +1,17 @@
 import { NextFunction, Request, Response } from "express"
 import { categoryService } from "./category.service";
 
-const getAllCategories = async () => {
-
+const getAllCategories = async (req:Request, res:Response, next:NextFunction) => {
+  try {
+    const result = await categoryService.getAllCategories()
+    res.status(200).json({
+        success:true,
+        message:'Categories fetched successfully',
+        data:result,
+    })
+  } catch (error:any) {
+    next(error)
+  }
 }
 
 const createCategory = async (

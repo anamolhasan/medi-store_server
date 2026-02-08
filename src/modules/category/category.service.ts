@@ -2,7 +2,11 @@ import { prisma } from "../../lib/prisma"
 import { AppError } from "../../middleware/appError"
 
 const getAllCategories = async () => {
-
+  return await prisma.category.findMany({
+    include:{
+        medicines:true,
+    }
+  })
 }
 
 const createCategory = async (category:string) => {
