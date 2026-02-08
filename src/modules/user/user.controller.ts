@@ -61,7 +61,7 @@ const sellerStatus = async (req:Request, res:Response, next:NextFunction) => {
 
 const customerStatus = async (req:Request, res:Response, next:NextFunction) => {
    try {
-    const suer = req.user;
+    const user = req.user;
     const result = await userService.customerStatus(user as Partial<User>);
     res.status(200).json({
         success:true,
@@ -73,8 +73,19 @@ const customerStatus = async (req:Request, res:Response, next:NextFunction) => {
    }
 }
 
-const updateUser = async () => {
+const updateUser = async (req:Request, res:Response, next:NextFunction) => {
+   try {
+    const {id} = req.params;
+    const user = req.user;
 
+    await userService.updateUser(
+        user as User, // actor
+        id as string, //target user id
+        req.body // update payload
+    )
+   } catch (error) {
+    next(error)
+   }
 }
 
 export const userController = {

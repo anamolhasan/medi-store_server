@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { NextFunction, Request } from "express";
 import { Role, UserStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { User } from "../../../generated/prisma/client";
@@ -210,8 +210,48 @@ const customerStatus = async (user:Partial<User>) => {
   }
 }
 
-const updateUser = async () => {
+const updateUser = async (
+    actor:User,
+    targetUserId:string,
+    payload:UpdateUserPayload,
+) => {
+   const targetUser = await prisma.user.findUnique({
+    where:{id:targetUserId},
+    select:{id:true, role:true}
+   })
 
+   if(!targetUser){
+    throw new AppError('User not found', 404)
+   }
+
+   const isSelf = actor.id === targetUserId;
+   let updateData: UpdateUserPayload = {};
+
+//    admin rules
+if(actor.role === Role.ADMIN){
+    if(payload.name !== undefined) updateData.name = payload.name;
+    if(payload.image !== undefined) updateData.image = payload.image;
+    if(payload.role !== undefined) updateData.role = payload.role;
+    if(payload.status !== undefined) updateData.status = payload.status
+}else {
+    // seller /customer
+    if(!isSelf) {
+        throw new AppError(
+            'You are not allowed to update role or status', 403,
+        )
+    }
+    if(payload.name !== undefined) updateData.name = payload.name;
+    if(payload.image !== undefined) updateData.image = payload.image
+}
+
+// Nothing ito update safeguard
+if(Object.keys(updateData).length === 0){
+    throw new AppError('No valid fields to update', 400)
+}
+return prisma.user.update({
+    where:{id:targetUserId},
+    data:updateData,
+})
 }
 
 export const userService = {
