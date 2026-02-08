@@ -24,15 +24,25 @@ const getAllUsers = async (req:Request, res:Response, next:NextFunction) => {
      const result = await userService.getAllUsers();
      res.status(200).json({
         success:true,
-        message:'All users fetched successfully!'
+        message:'All users fetched successfully!',
+        data:result
      })
    } catch (error: any) {
      next(error)
    }
 }
 
-const adminStatus = async () => {
-
+const adminStatus = async (req:Request, res:Response, next:NextFunction) => {
+     try {
+        const result = await userService.adminStatus()
+        res.status(200).json({
+            success:true,
+            message:'Admin stats fetched successfully!',
+            data:result,
+        })
+     } catch (error:any) {
+        next(error)
+     }
 }
 
 const sellerStatus = async () => {
