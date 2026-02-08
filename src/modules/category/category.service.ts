@@ -40,8 +40,19 @@ const deleteCategoryById = async (id:string) => {
   return result
 }
 
-const updateCategoryById = async () => {
+const updateCategoryById = async (id:string, name:string) => {
+ const category = await prisma.category.findUnique({
+    where:{id},
+ });
+ if(!category){
+    throw new AppError('Category not found', 404)
+ }
 
+ const result = await prisma.category.update({
+    where:{id},
+    data:{name}
+ })
+ return result;
 }
 
 
