@@ -25,8 +25,19 @@ const createCategory = async (category:string) => {
    })
 }
 
-const deleteCategory = async () => {
+const deleteCategoryById = async (id:string) => {
+  const category = await prisma.category.findUnique({
+    where:{id},
+  })
 
+  if(!category){
+    throw new AppError('Category not found', 404);
+  }
+
+  const result = await prisma.category.delete({
+    where:{id},
+  })
+  return result
 }
 
 const updateCategoryById = async () => {
@@ -37,6 +48,6 @@ const updateCategoryById = async () => {
 export const categoryService = {
     createCategory,
     getAllCategories,
-    deleteCategory,
+    deleteCategoryById,
     updateCategoryById,
 }
