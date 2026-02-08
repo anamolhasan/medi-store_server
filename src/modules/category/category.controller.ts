@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from "express"
 import { categoryService } from "./category.service";
 
+const getAllCategories = async () => {
 
+}
 
 const createCategory = async (
     req:Request,
@@ -24,7 +26,17 @@ const createCategory = async (
     }
 }
 
+const deleteCategoryById = async () => {
+
+}
+
+const updateCategoryById = async () => {
+
+}
 
 export const categoryController = {
     createCategory,
+    getAllCategories,
+    deleteCategoryById,
+    updateCategoryById,
 }

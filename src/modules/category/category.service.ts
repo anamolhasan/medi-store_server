@@ -1,7 +1,9 @@
 import { prisma } from "../../lib/prisma"
 import { AppError } from "../../middleware/appError"
 
+const getAllCategories = async () => {
 
+}
 
 const createCategory = async (category:string) => {
    const existingCategory = await prisma.category.findUnique({
@@ -19,7 +21,18 @@ const createCategory = async (category:string) => {
    })
 }
 
+const deleteCategory = async () => {
+
+}
+
+const updateCategoryById = async () => {
+
+}
+
 
 export const categoryService = {
     createCategory,
+    getAllCategories,
+    deleteCategory,
+    updateCategoryById,
 }
