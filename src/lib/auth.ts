@@ -7,10 +7,33 @@ import { Role, Status } from "../constants/enum";
 // If your Prisma file is located elsewhere, you can change the path
 
 export const auth = betterAuth({
+    baseURL:config.better_auth.url || "http://localhost:5000",
     database: prismaAdapter(prisma, {
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
-    trustedOrigins:[config.better_auth.app_url!],
+    trustedOrigins: async (request) => {
+       const origin = request?.headers.get('origin');
+
+       const allowedOrigins = [
+        config.better_auth.app_url,
+        config.better_auth.url,
+        "http://localhost:3000",
+        "http://localhost:4000",
+        "http://localhost:5000",
+        "https://medi-store-server-rust.vercel.app"
+       ].filter(Boolean)
+
+       // Check if origin matches allowed origins or vercel pattern
+       if(
+        !origin || 
+        allowedOrigins.includes(origin) || 
+         /^https:\/\/.*\.vercel\.app$/.test(origin)
+       ){
+        return [origin]
+       }
+       return []
+    },
+    basePath: '/api/auth',
     user: {
         additionalFields: {
             role:{
@@ -36,5 +59,19 @@ export const auth = betterAuth({
             clientId: config.google.client_id as string, 
             clientSecret: config.google.client_secret as string, 
         }, 
+    },
+    session:{
+        cookieCache:{
+            enabled:true,
+            maxAge:5 * 60  // 5minutes
+        }
+    },
+    advanced:{
+        cookiePrefix:'batter-auth',
+        useSecureCookies:process.env.NODE_ENV === 'production',
+        crossSubDomainCookies:{
+            enabled:false,
+        },
+        disableCSRFCheck:true // Allow requests without Origin header (postman, mobile app, etc)
     }
 });
