@@ -7,13 +7,15 @@ import { medicineRoutes } from './modules/medicine/medicine.route';
 import globalErrorHandler from './middleware/globalErrorHandler';
 import { categoryRoutes } from './modules/category/category.route';
 import { userRoutes } from './modules/user/user.route';
+import { orderRoutes } from './modules/order/order.routes';
+import { reviewRoutes } from './modules/review/review.route';
 
 const app = express()
 
 // middleware
 app.use(cors({
 
-     origin: ["http://localhost:3000"],
+     origin: ["http://localhost:3000", config.better_auth.app_url!],
     credentials:true,
 }))
 app.use(express.json())
@@ -26,6 +28,8 @@ app.all("/api/auth/*split", toNodeHandler(auth));
 app.use('/api/v1/category', categoryRoutes)
 app.use('/api/v1/medicine', medicineRoutes)
 app.use('/api/v1/user', userRoutes)
+app.use('/api/v1/order', orderRoutes)
+app.use('/api/v1/review', reviewRoutes)
 
 
 
