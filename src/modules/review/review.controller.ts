@@ -15,20 +15,57 @@ const getAllReviews = async (req:Request, res:Response, next:NextFunction) => {
   }
 }
 
-const getReviewByUserId = async () => {
-
+const getReviewByUserId = async (req:Request, res:Response, next:NextFunction) => {
+   try {
+      const {id} = req.params
+      const result = await reviewService.getReviewByUserId(id as string);
+      res.status(200).json({
+        success:true,
+        message:'Reviews fetched successfully',
+        data:result
+      })
+   } catch (error: any) {
+     next(error)
+   }
 }
 
-const createReview = async () => {
-
+const createReview = async (req:Request, res:Response, next:NextFunction) => {
+  try {
+    const result = await reviewService.createReview(req.body)
+    res.status(201).json({
+        success:true,
+        message:'Review created successfully',
+        data:result
+    })
+  } catch (error:any) {
+    next(error)
+  }
 }
 
-const deleteReviewById = async () => {
-
+const deleteReviewById = async (req:Request, res:Response, next:NextFunction) => {
+   try {
+     const {id} = req.params
+     await reviewService.deleteReviewById(id as string);
+     res.status(200).json({
+        success:true,
+        message:'Review deleted successfully'
+     })
+   } catch (error:any) {
+    next(error)
+   }
 }
 
-const updateReviewById = async () => {
-
+const updateReviewById = async (req:Request, res:Response, next:NextFunction) => {
+  try {
+    const {id} = req.params;
+    await reviewService.updateReviewById(id as string, req.body)
+    res.status(200).json({
+        success:true,
+        message:'Review update successfully'
+    })
+  } catch (error:any) {
+    next(error)
+  }
 }
 
 export const reviewController = {
