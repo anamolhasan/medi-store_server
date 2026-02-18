@@ -24,13 +24,10 @@ export const auth = betterAuth({
        ].filter(Boolean)
 
        // Check if origin matches allowed origins or vercel pattern
-       if(
-        !origin || 
-        allowedOrigins.includes(origin) || 
-         /^https:\/\/.*\.vercel\.app$/.test(origin)
-       ){
-        return [origin]
-       }
+       if (!origin) return allowedOrigins; // ✅ safer
+        if (allowedOrigins.includes(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin)) {
+            return [origin];
+        }
        return []
     },
     basePath: '/api/auth',
@@ -63,11 +60,11 @@ export const auth = betterAuth({
     session:{
         cookieCache:{
             enabled:true,
-            maxAge:5 * 60  // 5minutes
+             maxAge: 60 * 60 * 24 // 1 day
         }
     },
     advanced:{
-        cookiePrefix:'batter-auth',
+         cookiePrefix:'batter-auth',
         useSecureCookies:process.env.NODE_ENV === 'production',
         crossSubDomainCookies:{
             enabled:false,

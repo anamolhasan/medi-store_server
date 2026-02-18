@@ -102,26 +102,27 @@ model Category {
   @@index([name])
 }
 
-
 enum Role {
-  CUSTOMER 
-  SELLER 
+  CUSTOMER
+  SELLER
   ADMIN
 }
+
 enum UserStatus {
   ACTIVE
   BANNED
 }
+
 model User {
-  id            String   @id
+  id            String     @id
   name          String
   email         String
-  emailVerified Boolean  @default(false)
+  emailVerified Boolean    @default(false)
   image         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  role Role
-  status UserStatus @default(ACTIVE)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  role          Role       @default(CUSTOMER)
+  status        UserStatus @default(ACTIVE)
 
   // relations
   sessions  Session[]

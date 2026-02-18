@@ -15,7 +15,11 @@ const app = express()
 // middleware
 app.use(cors({
 
-     origin: ["http://localhost:3000", config.better_auth.app_url!],
+     origin: [
+        "http://localhost:5000", 
+        "http://localhost:3000", 
+        config.better_auth.app_url!
+    ],
     credentials:true,
 }))
 app.use(express.json())
